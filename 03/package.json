@@ -1,0 +1,17 @@
+{
+  "name": "03",
+  "version": "1.0.0",
+  "description": "",
+  "main": "03_1_OKW0002.js",
+  "dependencies": {
+    "fullnode": "^0.14.2"
+  },
+  "devDependencies": {
+    "groc": "^0.8.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

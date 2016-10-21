@@ -1,7 +1,48 @@
 var fs = require("fs");
-//var line = fs.readFileSync('/dev/stdin', 'utf8');
+var fullnode = require("fullnode");
+var Block = fullnode.Block;
+var BlockHeader = fullnode.BlockHeader;
+var BN = fullnode.Bn;
 
-var lines ="a891d05d006f7e7e29bd266f1a3314883ffb556fbf73caac6c4604d514b6944d\n6c4fb822beda2eb40bf212894711504b3cdca2af01e1fac469426feee477fa6d\n441582cfdb81dae14396578f239d35ad1419db7aaf46d056bf6738194414d01f\n1df8ee43477e43bf583fc0012fe7cbb22cb6a7b6223e98ec7c054bb7a20b89f3\n164577b2332bded00b27fd7943003b3036329de9d3bf1ee33f02beca0773c967\n210e8b96b3ce9d65ea9bf51b4c890f464fd81eb03e3648412469600b29d63045";
+var reversebuf = function(buf) {
+  var buf2 = new Buffer(buf.length);
+  for (var i = 0; i < buf.length; i++) {
+    buf2[i] = buf[buf.length-1-i];
+  }
+  console.log(buf2);
+  return buf2;
+};
 
-var lines = lines.split("\n");
-console.log(lines);
+function is0000(hash){
+  return hash[hash.length-1] == 0 && hash[hash.length-2] == 0
+}
+
+function blockId(){
+  var arr = [];
+  for(var i=0; i < this.length; i++){
+    arr.unshift(this[i].toString(16).replace(/^[0-f]$/, "0$&"));
+  }
+  return arr.join("");
+}
+
+//var line = "0100000000000000000000000000000000000000000000000000000000000000000000003BA3EDFD7A7B12B27AC72C3E67768F617FC81BC3888A51323A9FB8AA4B1E5E4A29AB5F49FFFF001D00000000".toLowerCase();
+//var result = "00007cc6ec08c5d53c32ceaf6e8309c32eb07fc903a94ec77ac2bf6e48f7adb3";
+var line = fs.readFileSync('/dev/stdin', 'utf8').replace(/\n/,"");
+var buf = new Buffer(line,'hex');
+var magicnum = eval("0xd9b4bef9");
+let header = new BlockHeader().fromBuffer(buf);
+
+//for(var i=8603; i < 8604; i++){
+for(var i=0; i < 0xffffffff; i++){
+  header.nonce = i;
+  let block = new Block(magicnum, 0, header, 0, []);
+
+  var hash = block.hash();
+  if(is0000(hash)){
+    hash["blockId"] = blockId;
+    console.log(i);
+    console.log(hash.blockId());
+    //console.log(result);
+    break;
+  }
+}
